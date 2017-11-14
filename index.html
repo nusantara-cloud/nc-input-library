@@ -1,0 +1,55 @@
+<htmL>
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="subjectEditor" > </div>
+          <div id="materialEditor" > </div>
+          <div id="dependencyEditor" > </div>
+          <div id="tagEditor" />
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="/dist/bundle.js"> </script>
+  <script>
+    const subjectHeader = {
+      design: {
+        title: 'Subject Editor',
+        panelColor: 'green'
+      },
+      table: {
+        ui: [
+          {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
+          {id: 'subject', desc: 'Subject', dataTable: true, input: 'text', disabled: false},
+          {id: 'lastModified', desc: 'Last Modified', dataTable: true, input: 'date'},
+          {id: 'description', desc: 'Description', dataTable: true, input: 'textArea'}
+        ],
+        conf: {
+          orderBy: 'lastModified',
+          getURL: function () {
+            return 'getURL'
+          },
+          onRowClicked: function (data) {
+            console.log('row clicked!')
+          }
+        }
+      },
+      buttons: {
+        ui: [
+          {id: 'add', desc: 'Add', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/addSubject'},
+          {id: 'edit', desc: 'Edit', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/editSubject'},
+          {id: 'delete', desc: 'Delete', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/deleteSubject'}
+        ]
+      }
+    }
+    $('#subjectEditor').NCInputLibrary(subjectHeader)
+
+  </script>
+</html>
