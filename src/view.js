@@ -3,10 +3,13 @@ var dt = require('datatables.net')(window, $)
 // var dt = null
 var moment = require('moment')
 // var moment = null
+var NProgress = require('nprogress')
 
 class View {
   constructor (rootElement) {
     this._rootElement = rootElement
+    // Hold reference to all buttons
+    this._buttonElements = []
   }
 
   // --------------------------------------------------------------
@@ -74,6 +77,29 @@ class View {
   addRow (row) {
     this._dataTable.row.add(row).draw()
   }
+
+  startProgressbar () {
+    NProgress.start()
+  }
+
+  finishProgressbar () {
+    NProgress.done()
+  }
+
+  // Enable all the buttons on this nc-input-library
+  enableButtons () {
+    this._buttonElements.forEach(button => {
+      button.prop('disabled', false)
+    })
+  }
+
+  // Disable all the buttons on this nc-input-library
+  disableButtons () {
+    this._buttonElements.forEach(button => {
+      button.prop('disabled', true)
+    })
+  }
+
   // --------------------------------------------------------------
 
   _initDataTable (tableElement, tableConf) {
@@ -109,6 +135,7 @@ class View {
         selectedRow.removeClass('highlight-dt-row')
       }
       selectedRow = $(this).closest('tr')
+
       selectedRow.addClass('highlight-dt-row')
       self._onRowClickedListener(self._selectedData)
     })
@@ -156,8 +183,15 @@ class View {
       row.append(col)
       var button = $('<button class="btn btn-default btn-block" type="button">' +
           buttonsConf.ui[i].desc + '</button>')
-      button.click(event => this._onButtonClicked && this._onButtonClicked(id, buttonsConf.ui[i].postTo, event))
+      button.click(event => {
+        if (this._onButtonClicked) {
+          this._onButtonClicked(id, buttonsConf.ui[i].postTo, event)
+        }
+      })
       col.append(button)
+
+      // Save the reference to this button
+      this._buttonElements.push(button)
     }
     formElement.append(row)
   }

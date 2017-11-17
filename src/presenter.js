@@ -52,6 +52,10 @@ class Presenter {
     this._view.setOnButtonClickedListener((id, postTo, event) => {
       const data = this._view.getInputFormData()
       log.debug(TAG, 'presenter.onButtonClickedListener(): data=' + JSON.stringify(data))
+
+      // While POST request is happening, give some UI feedback
+      this._view.startProgressbar()
+      this._view.disableButtons()
       this._model.submitData(postTo(), data).then(resp => {
         if (resp.status) {
           this._view.setNotif('Success!')
@@ -64,6 +68,9 @@ class Presenter {
       }).catch(err => {
         log.error(TAG, err)
         this._view.setNotif('Internal Error...', true)
+      }).then(() => {
+        this._view.finishProgressbar()
+        this._view.enableButtons()
       })
     })
 
