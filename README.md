@@ -7,6 +7,7 @@ in web frontend.
 2. browserify-shim: Allows using non-NPM modules with browserify
 3. babelify: JS Transpiler
 4. babel-presets-es2015: ES6 -> ES5 presets.
+5. datatables.net
 
 ## Project Structure:
 1. Coding entry-point is main.js
