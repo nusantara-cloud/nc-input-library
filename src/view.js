@@ -210,7 +210,7 @@ class View {
     tableElement.append(thead)
   }
 
-  // Initialize HTML layout to place the elemtn
+  // Initialize HTML layout to place the element
   // (i.e. empty div for inputs, empty div for buttons, and empty table)
   _initLayout (rootElement, tableConf, designConf) {
     const initialized = {}
@@ -238,6 +238,93 @@ class View {
     row.append(col)
     initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; margin: auto" role="alert"/>')
     col.append(initialized.notif)
+
+    // Initialize HTML form used for inputs
+    row = $('<div class="row" />')
+    // Initialize HTML elements for DataTable search
+    var divColMd4 = $('<div class="col-md-4"></div>')
+    var labelSearch = $('<label>Search</label><br/>')
+    divColMd4.append(labelSearch)
+
+    // The UI allows user to search with multiple criterion.
+    // For example, user can filter by ID, then filter by namaStandard
+    // Within the first filter, there is a + button to add more filter.
+    // On the subsequent filter, the button is -, which is to remove
+    // that filter.
+    const btnAddFilter = $('<button type="button" class="btn btn-info btn-add-filter">+</button>')
+    function addFilterUI (firstFilter) {
+      var searchOption = $('<select class="form-control custom-dt-search-option" style="display:inline-block; width:88%;" />')
+      for (var i = 0; i < tableConf.ui.length; i++) {
+        if (tableConf.ui[i].desc) {
+          // The cryptic string '[columnName]:name' is used to find datatable column by its name
+          searchOption.append($('<option value="' + tableConf.ui[i].id + ':name">' + tableConf.ui[i].desc + '</option>'))
+        }
+      }
+      var searchText = $('<input class="form-control custom-dt-search" type="text" />')
+
+      var filterContent = ($('<div />'))
+      filterContent.append(searchOption)
+
+      if (!firstFilter) {
+        const btnRemoveFilter = $('<button type="button" class="btn btn-danger btn-remove">-</button>')
+        filterContent.append(btnRemoveFilter)
+      } else {
+        filterContent.append(btnAddFilter)
+      }
+
+      filterContent.append(searchText)
+      return filterContent
+    }
+
+    var divCurrFilter = $('<div section="current_filter" />')
+    divCurrFilter.append(addFilterUI(true))
+
+    divColMd4.append(divCurrFilter)
+
+    btnAddFilter.on('click', function (e) {
+      $(this).parent().parent().append(addFilterUI())
+    })
+
+    const self = this
+    function performMultiSearch (searchValue, searchOption) {
+      var divCurrentFilter = divCurrFilter.children()
+      Array.from(divCurrentFilter).reduce((acc, value) => {
+        // result columnName = namaKain
+        const columnName = $(value).find('select').val()
+        const searchText = $(value).find('input[type=text]').val()
+        // Last two argument: use regex and don't use smart search
+        return acc.column(columnName).search(searchText, true, false)
+      }, self._dataTable).draw()
+    }
+
+    function clearSearch () {
+      self._dataTable.search('').columns().search('').draw()
+    }
+
+    // when typing in the input box & dropdown change
+    $(divCurrFilter).on('keyup change', function (e) {
+      clearSearch()
+      performMultiSearch()
+    })
+
+    // Ending of input search table
+    row.append(divColMd4)
+    panelBody.append(row)
+
+    // button remove when clicked action
+    $(divCurrFilter).on('click', '.btn-remove', function (e) {
+      $(this).parent().remove()
+      clearSearch()
+      performMultiSearch()
+    })
+
+
+
+
+
+
+
+
 
     // Iniitialize HTML table used for DataTable
     row = $('<div class="row" />')

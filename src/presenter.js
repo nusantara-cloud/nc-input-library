@@ -52,7 +52,6 @@ class Presenter {
     this._view.setOnButtonClickedListener((id, postTo, event) => {
       const data = this._view.getInputFormData()
       log.debug(TAG, 'presenter.onButtonClickedListener(): data=' + JSON.stringify(data))
-
       // While POST request is happening, give some UI feedback
       this._view.startProgressbar()
       this._view.disableButtons()
