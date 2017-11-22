@@ -111,7 +111,8 @@ class View {
         data: tableConf.ui[i].id,
         name: tableConf.ui[i].id // used to refer to this column, instead of using index
       }
-      if (tableConf.ui[i].input === 'date') {
+
+      if (tableConf.ui[i].type === 'date' || tableConf.ui[i].input === 'date') {
         colConf.render = function (data, type, full, meta) {
           return moment(data).utc().format('YYYY-MM-DD hh:mm:ss')
         }
@@ -172,6 +173,20 @@ class View {
         formGroup.append(label)
         const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="hidden"/>`)
         formGroup.append(input)
+      } else if (tableConf.ui[i].input === 'select') {
+        const formGroup = $('<div class="col-md-6 form-group" />')
+        row.append(formGroup)
+        const label = $('<label/>')
+        label.html(tableConf.ui[i].desc)
+        formGroup.append(label)
+        console.log('isi dari data')
+        console.log(tableConf.ui[i].data)
+        var inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+        tableConf.ui[i].data.forEach((element, index) => {
+          var optionElement = $(`<option value="${element}">${element}</option>`)
+          inputSelect.append(optionElement)
+        })
+        formGroup.append(inputSelect)
       }
     }
 
@@ -317,14 +332,6 @@ class View {
       clearSearch()
       performMultiSearch()
     })
-
-
-
-
-
-
-
-
 
     // Iniitialize HTML table used for DataTable
     row = $('<div class="row" />')
