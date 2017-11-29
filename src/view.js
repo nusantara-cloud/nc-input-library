@@ -47,6 +47,12 @@ class View {
     this._notification.addClass(`alert-${error ? 'danger' : 'success'}`)
   }
 
+  clearNotif () {
+    this._notification.removeClass('alert-success')
+    this._notification.removeClass('alert-danger')
+    this._notification.hide()
+  }
+
   getCurrentRow (fn) {
     // fn(rowData)
     // When a row is selected, keep track of the selected row

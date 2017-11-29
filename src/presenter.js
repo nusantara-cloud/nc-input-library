@@ -27,17 +27,21 @@ class Presenter {
 
   reloadTable () {
     // Initialize table with given URL
+    this._view.startProgressbar()
     this._model.getRequest(this._conf.table.conf.getURL()).then(resp => {
       log.debug(TAG, 'reloadTable(): getRequest.resp=' + JSON.stringify(resp))
       if (resp.status) {
         this._view.setRows(resp.data)
+        this._view.clearNotif()
       } else {
-        log.error(TAG, 'Failed to fetch data! resp.errCode=' + resp.errCode)
+        log.error(TAG, 'Failed to fetch data! resp=' + JSON.stringify(resp))
         this._view.setNotif('Failed to fetch data!', true)
       }
     }).catch(err => {
       log.error(TAG, err)
       this._view.setNotif('Failed to fetch data!', true)
+    }).then(() => {
+      this._view.finishProgressbar()
     })
   }
 
