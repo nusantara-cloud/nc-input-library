@@ -28,10 +28,15 @@
         ui: [
           {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
           {id: 'subject', desc: 'Subject', dataTable: true, input: 'text', disabled: false},
+          // if want to be select option, you can use input select
+          {id: 'namaKain', desc: 'Nama Kain', dataTable: true, input: 'select', disabled: false},
+          // type is defined as for show only in datatable, and input type is not shown.
+          // {id: 'lastModified', desc: 'Last Modified', dataTable: true, type: 'date'},
           {id: 'lastModified', desc: 'Last Modified', dataTable: true, input: 'date'},
           {id: 'description', desc: 'Description', dataTable: true, input: 'textArea'}
         ],
         conf: {
+          orderType: 'desc', // If not defined orderType, default is desc
           orderBy: 'lastModified',
           getURL: function () {
             return 'getURL'
@@ -43,6 +48,9 @@
       },
       buttons: {
         ui: [
+        /**
+          postTo, there's errData that return errorField thats to highlight red input text box. If there's something missing;
+        **/
           {id: 'add', desc: 'Add', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/addSubject'},
           {id: 'edit', desc: 'Edit', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/editSubject'},
           {id: 'delete', desc: 'Delete', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/deleteSubject'}

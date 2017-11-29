@@ -47,6 +47,18 @@ class View {
     this._notification.addClass(`alert-${error ? 'danger' : 'success'}`)
   }
 
+  setHighlightError (tableConf, error = false, errorFields) {
+    tableConf.table.ui.map((fieldId) => {
+      $('input[name=' + fieldId.id + ']').removeClass('highlight-error')
+    })
+
+    if (error) {
+      errorFields.map((field) => {
+        $('input[name=' + field + ']').addClass('highlight-error')
+      })
+    }
+  }
+
   getCurrentRow (fn) {
     // fn(rowData)
     // When a row is selected, keep track of the selected row
@@ -105,6 +117,7 @@ class View {
   _initDataTable (tableElement, tableConf) {
     const columns = []
     const orderBy = tableConf.conf.orderBy
+    const orderType = tableConf.conf.orderType || 'desc'
     var orderIndex = -1
     for (var i = 0; i < tableConf.ui.length; i++) {
       const colConf = {
@@ -125,7 +138,8 @@ class View {
     }
 
     const dataTable = tableElement.DataTable({
-      columns
+      columns,
+      'order': [[ orderIndex, orderType ]]
     })
 
     var selectedRow = null
@@ -179,8 +193,6 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        console.log('isi dari data')
-        console.log(tableConf.ui[i].data)
         var inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
         tableConf.ui[i].data.forEach((element, index) => {
           var optionElement = $(`<option value="${element}">${element}</option>`)
@@ -268,17 +280,18 @@ class View {
     // that filter.
     const btnAddFilter = $('<button type="button" class="btn btn-info btn-add-filter">+</button>')
     function addFilterUI (firstFilter) {
-      var searchOption = $('<select class="form-control custom-dt-search-option" style="display:inline-block; width:88%;" />')
+      var searchOption = $('<select class="form-control custom-dt-search-option" />')
       for (var i = 0; i < tableConf.ui.length; i++) {
         if (tableConf.ui[i].desc) {
           // The cryptic string '[columnName]:name' is used to find datatable column by its name
           searchOption.append($('<option value="' + tableConf.ui[i].id + ':name">' + tableConf.ui[i].desc + '</option>'))
         }
       }
-      var searchText = $('<input class="form-control custom-dt-search" type="text" />')
+      var searchText = $('<input class="form-control custom-dt-search" type="text" style="display:inline-block;width:88%;" />')
 
       var filterContent = ($('<div />'))
       filterContent.append(searchOption)
+      filterContent.append(searchText)
 
       if (!firstFilter) {
         const btnRemoveFilter = $('<button type="button" class="btn btn-danger btn-remove">-</button>')
@@ -287,7 +300,6 @@ class View {
         filterContent.append(btnAddFilter)
       }
 
-      filterContent.append(searchText)
       return filterContent
     }
 

@@ -58,11 +58,15 @@ class Presenter {
       this._model.submitData(postTo(), data).then(resp => {
         if (resp.status) {
           this._view.setNotif('Success!')
+          this._view.setHighlightError(this._conf, false)
           // Refresh the table
           this.reloadTable()
         } else {
           log.error(TAG, 'Failed to submit data! errCode=' + resp.errCode + ' errMessage=' + resp.errMessage)
           this._view.setNotif(`Failed: ${resp.errMessage}`, true)
+          if (resp.errData) {
+            this._view.setHighlightError(this._conf, true, resp.errData.errorFields)
+          }
         }
       }).catch(err => {
         log.error(TAG, err)
