@@ -19,6 +19,54 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="/dist/bundle.js"> </script>
   <script>
+    function getMasterNamaKain () {
+      return ['Kain A', 'Kain B', 'Kain C']
+    }
+
+    // Below is the function as Promise
+    function getMasterNamaStandard () {
+      return axios.get('/admin/masterdata/get/namaStandard').then(resp => {
+        if (resp.status) {
+          return resp.data.data.map((data) => {
+            return data.namaStandard
+          })
+        } else {
+          return resp
+        }
+      })
+    }
+
+    // Our convention is return any GET data is {status: true, data: data}
+    // When you pass this to our library, our library will get .url.data
+    /**
+      processResults: function (result) {
+        return {
+          results: result.data.map((data) => {
+            for (var key in data) {
+              if (key === selectData.searchVar) {
+                return {id: data[key], text: data[key]}
+              }
+            }
+          })
+        }
+      }
+
+      Take a good look at our function when processing, we using the .data to loop and finding the key with searchVar.
+      I mean, the return maybe like this {status: true, data: {id: 1, namaKain: '2', lastModified: '13-1-2017'}}
+      or {status:true, data: {id: 1, username: 'hello', password: '123', is_admin: 1}}
+
+      When some like this happen, you only define in searchVar like namaKain, you will only get result key from namaKain.
+
+      Don't forget that return id and text is for <option value=[id]>[text]</option>
+
+    **/
+    function test () {
+      return {
+        url: 'http://localhost:9000/admin/masterdata/get/namaStandard',
+        searchVar: 'namaStandard'
+      }
+    }
+
     const subjectHeader = {
       design: {
         title: 'Subject Editor',
@@ -28,10 +76,18 @@
         ui: [
           {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
           {id: 'subject', desc: 'Subject', dataTable: true, input: 'text', disabled: false},
+          // if want to be select option, you can use input select
+          {id: 'namaKain', desc: 'Nama Kain', dataTable: true, input: 'select', disabled: false, data: getMasterNamaKain},
+          {id: 'namaStandard', desc: 'Nama Standard', dataTable: true, input: 'select', disabled: false, data: getMasterNamaStandard},
+          // type is defined as for show only in datatable, and input type is not shown.
+          // {id: 'lastModified', desc: 'Last Modified', dataTable: true, type: 'date'},
           {id: 'lastModified', desc: 'Last Modified', dataTable: true, input: 'date'},
-          {id: 'description', desc: 'Description', dataTable: true, input: 'textArea'}
+          {id: 'description', desc: 'Description', dataTable: true, input: 'textArea'},
+          {id: 'testunit', desc: 'test unit', dataTable: true, input: 'select', disabled: false, selectData: test}
+
         ],
         conf: {
+          orderType: 'desc', // If not defined orderType, default is desc
           orderBy: 'lastModified',
           getURL: function () {
             return 'getURL'
@@ -43,6 +99,9 @@
       },
       buttons: {
         ui: [
+        /**
+          postTo, there's errData that return errorField thats to highlight red input text box. If there's something missing;
+        **/
           {id: 'add', desc: 'Add', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/addSubject'},
           {id: 'edit', desc: 'Edit', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/editSubject'},
           {id: 'delete', desc: 'Delete', postTo: '/e1cc3c2b195be554d7321e6e0114bf27/deleteSubject'}

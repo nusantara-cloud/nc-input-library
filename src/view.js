@@ -1,5 +1,8 @@
 var $ = require('jquery')
 var dt = require('datatables.net')(window, $)
+
+require('select2')
+
 // var dt = null
 var moment = require('moment')
 // var moment = null
@@ -18,15 +21,15 @@ class View {
   initialize (conf) {
     // console.log(`rootElement=${JSON.stringify(this.rootElement)}`)
     // console.log(`conf=${JSON.stringify(conf)}`)
-    const tableConf = conf.table
+    this._tableConf = conf.table
     const buttonsConf = conf.buttons
     const designConf = conf.design
-    this._htmlElements = this._initLayout(this._rootElement, tableConf, designConf)
+    this._htmlElements = this._initLayout(this._rootElement, this._tableConf, designConf)
     // Bootstrap alert
     this._notification = this._htmlElements.notif
-    this._initInputForm(this._htmlElements.inputForm, tableConf, buttonsConf)
-    this._initTable(this._htmlElements.table, tableConf)
-    this._dataTable = this._initDataTable(this._htmlElements.table, tableConf)
+    this._initInputForm(this._htmlElements.inputForm, this._tableConf, buttonsConf)
+    this._initTable(this._htmlElements.table, this._tableConf)
+    this._dataTable = this._initDataTable(this._htmlElements.table, this._tableConf)
   }
 
   setOnRowClickedListener (fn) {
@@ -46,6 +49,18 @@ class View {
     this._notification.html(text)
     this._notification.addClass(`alert-${error ? 'danger' : 'success'}`)
   }
+
+  clearInputHighlight () {
+    this._tableConf.ui.map((field) => {
+      $('input[name=' + field.id + ']').removeClass('highlight-error')
+    })
+  }
+
+  setInputHighlight (errorFields) {
+    this.clearInputHighlight()
+    errorFields.map((field) => {
+      $('input[name=' + field + ']').addClass('highlight-error')
+    })
 
   clearNotif () {
     this._notification.removeClass('alert-success')
@@ -111,13 +126,15 @@ class View {
   _initDataTable (tableElement, tableConf) {
     const columns = []
     const orderBy = tableConf.conf.orderBy
+    const orderType = tableConf.conf.orderType || 'desc'
     var orderIndex = -1
     for (var i = 0; i < tableConf.ui.length; i++) {
       const colConf = {
         data: tableConf.ui[i].id,
         name: tableConf.ui[i].id // used to refer to this column, instead of using index
       }
-      if (tableConf.ui[i].input === 'date') {
+
+      if (tableConf.ui[i].type === 'date' || tableConf.ui[i].input === 'date') {
         colConf.render = function (data, type, full, meta) {
           return moment(data).utc().format('YYYY-MM-DD hh:mm:ss')
         }
@@ -130,7 +147,8 @@ class View {
     }
 
     const dataTable = tableElement.DataTable({
-      columns
+      columns,
+      'order': [[ orderIndex, orderType ]]
     })
 
     var selectedRow = null
@@ -178,6 +196,62 @@ class View {
         formGroup.append(label)
         const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="hidden"/>`)
         formGroup.append(input)
+      } else if (tableConf.ui[i].input === 'select') {
+        const formGroup = $('<div class="col-md-6 form-group" />')
+        row.append(formGroup)
+        const label = $('<label/>')
+        label.html(tableConf.ui[i].desc)
+        formGroup.append(label)
+        var inputSelect = $('')
+        var selectData = tableConf.ui[i].selectData()
+
+        if (selectData instanceof Array) {
+          inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+          selectData.forEach((element, index) => {
+            var optionElement = $(`<option value="${element}">${element}</option>`)
+            inputSelect.append(optionElement)
+          })
+          formGroup.append(inputSelect)
+          inputSelect.select2()
+        } else if (selectData instanceof Promise) {
+          selectData.then(resp => {
+            inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+            resp.forEach((element, index) => {
+              var optionElement = $(`<option value="${element}">${element}</option>`)
+              inputSelect.append(optionElement)
+            })
+            formGroup.append(inputSelect)
+            inputSelect.select2()
+          }).catch(err => {
+            console.error(err)
+          })
+        } else if (typeof selectData === 'object') {
+          /* Select data source is AJAX
+            selectData = {
+              url: 'http://test.com/getData', // Returns array of object
+              searchVar: 'key'  // Key of target object
+            }
+          */
+          inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+          formGroup.append(inputSelect)
+          inputSelect.select2({
+            ajax: {
+              url: selectData.url,
+              dataType: 'json',
+              delay: 250,
+              processResults: function (result) {
+                return {
+                  results: result.data.map((data) => {
+                    return {id: data[selectData.searchVar], text: data[selectData.searchVar]}
+                  })
+                }
+              },
+              cache: false
+            }
+          })
+        } else {
+          console.error('Error instance of selectData, neither Promise or Array')
+        }
       }
     }
 
@@ -266,6 +340,7 @@ class View {
           searchOption.append($('<option value="' + tableConf.ui[i].id + ':name">' + tableConf.ui[i].desc + '</option>'))
         }
       }
+
       var searchText = $('<input class="form-control custom-dt-search" type="text" />')
 
       var filterContent = ($('<div />'))
@@ -323,14 +398,6 @@ class View {
       clearSearch()
       performMultiSearch()
     })
-
-
-
-
-
-
-
-
 
     // Iniitialize HTML table used for DataTable
     row = $('<div class="row" />')
