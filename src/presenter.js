@@ -52,18 +52,22 @@ class Presenter {
     this._view.setOnButtonClickedListener((id, postTo, event) => {
       const data = this._view.getInputFormData()
       log.debug(TAG, 'presenter.onButtonClickedListener(): data=' + JSON.stringify(data))
-
       // While POST request is happening, give some UI feedback
       this._view.startProgressbar()
       this._view.disableButtons()
       this._model.submitData(postTo(), data).then(resp => {
         if (resp.status) {
           this._view.setNotif('Success!')
+          this._view.clearInputHighlight()
           // Refresh the table
           this.reloadTable()
         } else {
           log.error(TAG, 'Failed to submit data! errCode=' + resp.errCode + ' errMessage=' + resp.errMessage)
           this._view.setNotif(`Failed: ${resp.errMessage}`, true)
+          // Highlight error on inputs
+          if (resp.errData && resp.errData.errorFields) {
+            this._view.setInputHighlight(resp.errData.errorFields)
+          }
         }
       }).catch(err => {
         log.error(TAG, err)
