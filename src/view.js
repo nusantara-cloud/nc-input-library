@@ -61,6 +61,11 @@ class View {
     errorFields.map((field) => {
       $('input[name=' + field + ']').addClass('highlight-error')
     })
+
+  clearNotif () {
+    this._notification.removeClass('alert-success')
+    this._notification.removeClass('alert-danger')
+    this._notification.hide()
   }
 
   getCurrentRow (fn) {
@@ -328,18 +333,18 @@ class View {
     // that filter.
     const btnAddFilter = $('<button type="button" class="btn btn-info btn-add-filter">+</button>')
     function addFilterUI (firstFilter) {
-      var searchOption = $('<select class="form-control custom-dt-search-option" />')
+      var searchOption = $('<select class="form-control custom-dt-search-option" style="display:inline-block; width:88%;" />')
       for (var i = 0; i < tableConf.ui.length; i++) {
         if (tableConf.ui[i].desc) {
           // The cryptic string '[columnName]:name' is used to find datatable column by its name
           searchOption.append($('<option value="' + tableConf.ui[i].id + ':name">' + tableConf.ui[i].desc + '</option>'))
         }
       }
-      var searchText = $('<input class="form-control custom-dt-search" type="text" style="display:inline-block;width:88%;" />')
+
+      var searchText = $('<input class="form-control custom-dt-search" type="text" />')
 
       var filterContent = ($('<div />'))
       filterContent.append(searchOption)
-      filterContent.append(searchText)
 
       if (!firstFilter) {
         const btnRemoveFilter = $('<button type="button" class="btn btn-danger btn-remove">-</button>')
@@ -348,6 +353,7 @@ class View {
         filterContent.append(btnAddFilter)
       }
 
+      filterContent.append(searchText)
       return filterContent
     }
 
