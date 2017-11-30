@@ -1,5 +1,8 @@
 var $ = require('jquery')
 var dt = require('datatables.net')(window, $)
+
+require('select2')
+
 // var dt = null
 var moment = require('moment')
 // var moment = null
@@ -195,7 +198,7 @@ class View {
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
         var inputSelect = $('')
-        var selectData = tableConf.ui[i].data()
+        var selectData = tableConf.ui[i].selectData()
 
         if (selectData instanceof Array) {
           inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
@@ -204,6 +207,7 @@ class View {
             inputSelect.append(optionElement)
           })
           formGroup.append(inputSelect)
+          inputSelect.select2()
         } else if (selectData instanceof Promise) {
           selectData.then(resp => {
             inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
@@ -212,8 +216,33 @@ class View {
               inputSelect.append(optionElement)
             })
             formGroup.append(inputSelect)
+            inputSelect.select2()
           }).catch(err => {
             console.error(err)
+          })
+        } else if (typeof selectData === 'object') {
+          /* Select data source is AJAX
+            selectData = {
+              url: 'http://test.com/getData', // Returns array of object
+              searchVar: 'key'  // Key of target object
+            }
+          */
+          inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+          formGroup.append(inputSelect)
+          inputSelect.select2({
+            ajax: {
+              url: selectData.url,
+              dataType: 'json',
+              delay: 250,
+              processResults: function (result) {
+                return {
+                  results: result.data.map((data) => {
+                    return {id: data[selectData.searchVar], text: data[selectData.searchVar]}
+                  })
+                }
+              },
+              cache: false
+            }
           })
         } else {
           console.error('Error instance of selectData, neither Promise or Array')
