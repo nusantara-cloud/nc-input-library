@@ -19,6 +19,23 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="/dist/bundle.js"> </script>
   <script>
+    function getMasterNamaKain () {
+      return ['Kain A', 'Kain B', 'Kain C']
+    }
+
+    // Below is the function as Promise
+    function getMasterNamaStandard () {
+      return axios.get('/admin/masterdata/get/namaStandard').then(resp => {
+        if (resp.status) {
+          return resp.data.data.map((data) => {
+            return data.namaStandard
+          })
+        } else {
+          return resp
+        }
+      })
+    }
+
     const subjectHeader = {
       design: {
         title: 'Subject Editor',
@@ -29,7 +46,8 @@
           {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
           {id: 'subject', desc: 'Subject', dataTable: true, input: 'text', disabled: false},
           // if want to be select option, you can use input select
-          {id: 'namaKain', desc: 'Nama Kain', dataTable: true, input: 'select', disabled: false},
+          {id: 'namaKain', desc: 'Nama Kain', dataTable: true, input: 'select', disabled: false, data: getMasterNamaKain},
+          {id: 'namaStandard', desc: 'Nama Standard', dataTable: true, input: 'select', disabled: false, data: getMasterNamaStandard},
           // type is defined as for show only in datatable, and input type is not shown.
           // {id: 'lastModified', desc: 'Last Modified', dataTable: true, type: 'date'},
           {id: 'lastModified', desc: 'Last Modified', dataTable: true, input: 'date'},

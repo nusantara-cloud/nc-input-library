@@ -18,15 +18,15 @@ class View {
   initialize (conf) {
     // console.log(`rootElement=${JSON.stringify(this.rootElement)}`)
     // console.log(`conf=${JSON.stringify(conf)}`)
-    const tableConf = conf.table
+    this._tableConf = conf.table
     const buttonsConf = conf.buttons
     const designConf = conf.design
-    this._htmlElements = this._initLayout(this._rootElement, tableConf, designConf)
+    this._htmlElements = this._initLayout(this._rootElement, this._tableConf, designConf)
     // Bootstrap alert
     this._notification = this._htmlElements.notif
-    this._initInputForm(this._htmlElements.inputForm, tableConf, buttonsConf)
-    this._initTable(this._htmlElements.table, tableConf)
-    this._dataTable = this._initDataTable(this._htmlElements.table, tableConf)
+    this._initInputForm(this._htmlElements.inputForm, this._tableConf, buttonsConf)
+    this._initTable(this._htmlElements.table, this._tableConf)
+    this._dataTable = this._initDataTable(this._htmlElements.table, this._tableConf)
   }
 
   setOnRowClickedListener (fn) {
@@ -47,16 +47,17 @@ class View {
     this._notification.addClass(`alert-${error ? 'danger' : 'success'}`)
   }
 
-  setHighlightError (tableConf, error = false, errorFields) {
-    tableConf.table.ui.map((fieldId) => {
-      $('input[name=' + fieldId.id + ']').removeClass('highlight-error')
+  clearInputHighlight () {
+    this._tableConf.ui.map((field) => {
+      $('input[name=' + field.id + ']').removeClass('highlight-error')
     })
+  }
 
-    if (error) {
-      errorFields.map((field) => {
-        $('input[name=' + field + ']').addClass('highlight-error')
-      })
-    }
+  setInputHighlight (errorFields) {
+    this.clearInputHighlight()
+    errorFields.map((field) => {
+      $('input[name=' + field + ']').addClass('highlight-error')
+    })
   }
 
   getCurrentRow (fn) {
@@ -193,12 +194,30 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        var inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
-        tableConf.ui[i].data.forEach((element, index) => {
-          var optionElement = $(`<option value="${element}">${element}</option>`)
-          inputSelect.append(optionElement)
-        })
-        formGroup.append(inputSelect)
+        var inputSelect = $('')
+        var selectData = tableConf.ui[i].data()
+
+        if (selectData instanceof Array) {
+          inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+          selectData.forEach((element, index) => {
+            var optionElement = $(`<option value="${element}">${element}</option>`)
+            inputSelect.append(optionElement)
+          })
+          formGroup.append(inputSelect)
+        } else if (selectData instanceof Promise) {
+          selectData.then(resp => {
+            inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+            resp.forEach((element, index) => {
+              var optionElement = $(`<option value="${element}">${element}</option>`)
+              inputSelect.append(optionElement)
+            })
+            formGroup.append(inputSelect)
+          }).catch(err => {
+            console.error(err)
+          })
+        } else {
+          console.error('Error instance of selectData, neither Promise or Array')
+        }
       }
     }
 
