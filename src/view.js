@@ -168,7 +168,7 @@ class View {
     // Inputs
     for (let i = 0; i < tableConf.ui.length; i++) {
       if (tableConf.ui[i].input === 'text') {
-        const formGroup = $('<div class="col-md-6 form-group" />')
+        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -176,7 +176,7 @@ class View {
         const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'textArea') {
-        const formGroup = $('<div class="col-md-6 form-group" />')
+        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -184,7 +184,7 @@ class View {
         const input = $(`<textarea class="form-control input-md" name="${tableConf.ui[i].id}" rows="2" placeholder="${tableConf.ui[i].placeholder || ''}" '/>`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'hidden') {
-        const formGroup = $('<div class="col-md-6 form-group" />')
+        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -192,7 +192,7 @@ class View {
         const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="hidden"/>`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'select') {
-        const formGroup = $('<div class="col-md-6 form-group" />')
+        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -256,7 +256,7 @@ class View {
       const id = buttonsConf.ui[i].id
       var col = $('<div class="col-md-3" />')
       row.append(col)
-      var button = $('<button class="btn btn-default btn-block" type="button">' +
+      var button = $('<button class="btn btn-default btn-block" type="button" id="btn_' + id + '">' +
           buttonsConf.ui[i].desc + '</button>')
       button.click(event => {
         if (this._onButtonClicked) {
@@ -392,6 +392,8 @@ class View {
       clearSearch()
       performMultiSearch()
     })
+
+    $('head').append($('<style>.select2 {width:100%!important;}</style>'))
 
     // Iniitialize HTML table used for DataTable
     row = $('<div class="row" />')
