@@ -1,0 +1,116 @@
+<htmL>
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.css"/>
+    <link rel="stylesheet" type="text/css" href="../dist/css/nc-input-library.css"/>
+    <link rel="stylesheet" type="text/css" href="../dist/css/nprogress.css"/>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1> NC Input Library - Demo </h1>
+          <p>
+            Endpoints for Add / Edit / Delete should:
+            <ol>
+              <li>Accept POST request</li>
+              <li>Return <code>{status: true}</code> on success</li>
+              <li>Return <code>{status: false, errMessage: 'Reason for failure'}</code> on failure</li>
+            </ol>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div id="studentEditor" > </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="../dist/bundle.js"> </script>
+  <script>
+    function getStudentGrades () {
+      // Array
+      return ['Freshman', 'Sophomore', 'Junior', 'Senior']
+      //
+      // or URL for AJAX
+      //
+      // return {url: 'http://www.example.com/getStudentGrads, searchVar: 'grade'}
+      // Where the GET request towards the URL returns {status: true, data: [{id: 0, grade: 'Junior'}, {id: 1, grade: 'Sophomore'}]}
+    }
+
+    /*
+      The following are supposed to return:
+
+      {status: true} if the operation was successful
+
+      or
+
+      {status: false, errMessage: 'Error Message'} if the operation failed
+      }
+    */
+    // ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    function addStudentURL () {
+      return 'http://opensource.nusantara-cloud.com/add/students'
+    }
+
+    function editStudentURL () {
+      return 'http://opensource.nusantara-cloud.com/edit/students'
+    }
+
+    function deleteStudentURL () {
+      return 'http://opensource.nusantara-cloud.com/delete/students'
+    }
+
+    function getDataURL () {
+      // return 'res/mockData.json'
+      // or
+      return 'http://opensource.nusantara-cloud.com/get/students'
+    }
+    // ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+
+    function onRowClicked (data) {
+      console.log('You clicked row with data: ' + JSON.stringify(data))
+    }
+
+    const studentEditorHeader = {
+      design: {
+        title: 'Student Editor',
+        panelColor: 'green'
+      },
+      table: {
+        ui: [
+          {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
+          {id: 'lastModified', desc: 'Last Modified', dataTable: true, type: 'date'},
+          {id: 'firstName', desc: 'First Name', dataTable: true, input: 'text', disabled: false},
+          {id: 'lastName', desc: 'Last Name', dataTable: true, input: 'text', disabled: false},
+          {id: 'grade', desc: 'Grade', dataTable: true, input: 'select', disabled: false, selectData: getStudentGrades},
+          {id: 'address', desc: 'Address', dataTable: true, input: 'text', disabled: false},
+          {id: 'notes', desc: 'Notes', dataTable: true, input: 'textArea'}
+        ],
+        conf: {
+          orderType: 'desc', // If not defined orderType, default is desc
+          orderBy: 'lastModified',
+          getURL: getDataURL,
+          onRowClicked: onRowClicked
+        }
+      },
+      buttons: {
+        ui: [
+          {id: 'add', desc: 'Add', postTo: addStudentURL},
+          {id: 'edit', desc: 'Edit', postTo: editStudentURL},
+          {id: 'delete', desc: 'Delete', postTo: deleteStudentURL}
+        ]
+      }
+    }
+
+    const studentNCInput = $('#studentEditor').NCInputLibrary(studentEditorHeader)
+    studentNCInput.reloadTable()
+
+  </script>
+</html>

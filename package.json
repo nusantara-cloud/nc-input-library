@@ -12,9 +12,8 @@
     ]
   },
   "scripts": {
-    "start": "nodemon run.js",
-    "build": "node run",
-    "buildtoo": "browserify -d -g . > bundle.js"
+    "start": "node watch.js",
+    "buildt": "browserify -d -g . > bundle.js"
   },
   "author": "",
   "license": "ISC",

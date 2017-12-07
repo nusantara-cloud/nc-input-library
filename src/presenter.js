@@ -35,11 +35,11 @@ class Presenter {
         this._view.clearNotif()
       } else {
         log.error(TAG, 'Failed to fetch data! resp=' + JSON.stringify(resp))
-        this._view.setNotif('Failed to fetch data!', true)
+        this._view.setNotif('Failed to fetch data: ' + resp.errMessage, true)
       }
     }).catch(err => {
       log.error(TAG, err)
-      this._view.setNotif('Failed to fetch data!', true)
+      this._view.setNotif('Failed to reload table: ' + err.message, true)
     }).then(() => {
       this._view.finishProgressbar()
     })
@@ -75,7 +75,7 @@ class Presenter {
         }
       }).catch(err => {
         log.error(TAG, err)
-        this._view.setNotif('Internal Error...', true)
+        this._view.setNotif(err.message || 'Internal Error...', true)
       }).then(() => {
         this._view.finishProgressbar()
         this._view.enableButtons()

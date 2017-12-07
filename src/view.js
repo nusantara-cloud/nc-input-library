@@ -1,7 +1,6 @@
 var $ = require('jquery')
 var dt = require('datatables.net')(window, $)
-
-require('select2')
+require('select2')($)
 
 // var dt = null
 var moment = require('moment')
@@ -61,6 +60,7 @@ class View {
     errorFields.map((field) => {
       $('input[name=' + field + ']').addClass('highlight-error')
     })
+  }
 
   clearNotif () {
     this._notification.removeClass('alert-success')
@@ -181,7 +181,7 @@ class View {
         const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'textArea') {
-        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
+        const formGroup = $('<div class="col-md-6 form-group" />')
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -202,7 +202,7 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        var inputSelect = $('')
+        var inputSelect
         var selectData = tableConf.ui[i].selectData()
 
         if (selectData instanceof Array) {
@@ -239,11 +239,15 @@ class View {
               url: selectData.url,
               dataType: 'json',
               delay: 250,
-              processResults: function (result) {
-                return {
-                  results: result.data.map((data) => {
-                    return {id: data[selectData.searchVar], text: data[selectData.searchVar]}
-                  })
+              processResults: function (resp) {
+                if (resp.status) {
+                  return {
+                    results: resp.data.map((data) => {
+                      return {id: data[selectData.searchVar], text: data[selectData.searchVar]}
+                    })
+                  }
+                } else {
+                  console.error(selectData.url + ' does not return valid response!')
                 }
               },
               cache: false
