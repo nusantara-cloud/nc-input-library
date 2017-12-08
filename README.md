@@ -2,6 +2,9 @@
 When building a CMS, one of the most common tasks is building UI for CRUD operations.
 NCInputLibrary aims to solve this by providing easy-to-use CRUD interface.
 
+## Live Demo
+https://www.nusantara-cloud.com/opensource/nc-input-library
+
 ## Details
 NCInputLibrary allows building a CRUD interface using:
 * HTML inputs (textbox, textarea, select)
