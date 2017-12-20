@@ -32,7 +32,7 @@ class Presenter {
       log.debug(TAG, 'reloadTable(): getRequest.resp=' + JSON.stringify(resp))
       if (resp.status) {
         this._view.setRows(resp.data)
-        this._view.clearNotif()
+        // this._view.clearNotif()
       } else {
         log.error(TAG, 'Failed to fetch data! resp=' + JSON.stringify(resp))
         this._view.setNotif('Failed to fetch data: ' + resp.errMessage, true)
@@ -43,6 +43,10 @@ class Presenter {
     }).then(() => {
       this._view.finishProgressbar()
     })
+  }
+
+  clearNotif () {
+    this._view.clearNotif()
   }
 
   initialize () {
