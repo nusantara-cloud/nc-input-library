@@ -25,14 +25,16 @@ class Presenter {
     }, conf)
   }
 
-  reloadTable () {
+  reloadTable (clearNotif) {
     // Initialize table with given URL
     this._view.startProgressbar()
     this._model.getRequest(this._conf.table.conf.getURL()).then(resp => {
       log.debug(TAG, 'reloadTable(): getRequest.resp=' + JSON.stringify(resp))
       if (resp.status) {
         this._view.setRows(resp.data)
-        // this._view.clearNotif()
+       if (clearNotif) {
+          this._view.clearNotif()
+        }
       } else {
         log.error(TAG, 'Failed to fetch data! resp=' + JSON.stringify(resp))
         this._view.setNotif('Failed to fetch data: ' + resp.errMessage, true)
@@ -65,7 +67,11 @@ class Presenter {
       this._view.disableButtons()
       this._model.submitData(postTo(), data).then(resp => {
         if (resp.status) {
-          this._view.setNotif('Success!')
+          if (!resp.successMessage) {
+            this._view.setNotif('Success!')
+          } else {
+            this._view.setNotif(resp.successMessage)
+          }
           this._view.clearInputHighlight()
           // Refresh the table
           this.reloadTable()
