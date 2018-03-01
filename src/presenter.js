@@ -13,14 +13,19 @@ class Presenter {
         // i.e.: {id: 'subject', desc: 'Subject', dataTable: true, input: 'text', disabled: false},
         ui: [],
         conf: {
+          orderType: 'asc',
           orderBy: null,
           getURL: '',
-          onRowClicked: null
+          onRowClicked: null,
+          numColumn: 4
         }
       },
       buttons: {
         // i.e.: {desc: 'Add', postTo: 'addSubject'},
-        ui: []
+        ui: [],
+        conf: {
+          networkTimeout: 2000
+        }
       }
     }, conf)
   }
@@ -28,11 +33,17 @@ class Presenter {
   reloadTable (clearNotif) {
     // Initialize table with given URL
     this._view.startProgressbar()
-    this._model.getRequest(this._conf.table.conf.getURL()).then(resp => {
+    var getURL
+    if (typeof this._conf.table.conf.getURL === 'function') {
+      getURL = this._conf.table.conf.getURL()
+    } else {
+      getURL = this._conf.table.conf.getURL
+    }
+    this._model.getRequest(getURL, this._conf.buttons.conf).then(resp => {
       log.debug(TAG, 'reloadTable(): getRequest.resp=' + JSON.stringify(resp))
       if (resp.status) {
         this._view.setRows(resp.data)
-       if (clearNotif) {
+        if (clearNotif) {
           this._view.clearNotif()
         }
       } else {
@@ -65,7 +76,16 @@ class Presenter {
       // While POST request is happening, give some UI feedback
       this._view.startProgressbar()
       this._view.disableButtons()
-      this._model.submitData(postTo(), data).then(resp => {
+      var postURL
+      if (typeof postTo === 'function') {
+        postURL = postTo()
+      } else if (typeof postTo === 'string') {
+        postURL = postTo
+      } else {
+        throw new Error('postTo paramater is not defined correctly. It should be function/string')
+      }
+
+      this._model.submitData(postURL, data, this._conf.buttons.conf).then(resp => {
         if (resp.status) {
           if (!resp.successMessage) {
             this._view.setNotif('Success!')
@@ -85,7 +105,7 @@ class Presenter {
         }
       }).catch(err => {
         log.error(TAG, err)
-        this._view.setNotif(err.message || 'Internal Error...', true)
+        this._view.setNotif('Failed: ' + err.message || 'Internal Error...', true)
       }).then(() => {
         this._view.finishProgressbar()
         this._view.enableButtons()

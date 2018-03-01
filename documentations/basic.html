@@ -3,6 +3,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.css"/>
     <link rel="stylesheet" type="text/css" href="../dist/css/nc-input-library.css"/>
     <link rel="stylesheet" type="text/css" href="../dist/css/nprogress.css"/>
@@ -97,15 +98,19 @@
           orderType: 'desc', // If not defined orderType, default is desc
           orderBy: 'lastModified',
           getURL: getDataURL,
-          onRowClicked: onRowClicked
+          onRowClicked: onRowClicked,
+          numColumn: 3 // number of column in the datatable
         }
       },
       buttons: {
         ui: [
           {id: 'add', desc: 'Add', postTo: addStudentURL},
           {id: 'edit', desc: 'Edit', postTo: editStudentURL},
-          {id: 'delete', desc: 'Delete', postTo: deleteStudentURL}
-        ]
+          {id: 'delete', desc: 'Delete', postTo: 'http://www.url-can-also-be-string.com/post'}
+        ],
+        conf: {
+          networkTimeout: 2000 // timeout for postTo request
+        }
       }
     }
 

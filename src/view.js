@@ -1,5 +1,5 @@
 var $ = require('jquery')
-var dt = require('datatables.net')(window, $)
+var dt = require('datatables.net-responsive')(window, $)
 require('select2')($)
 
 // var dt = null
@@ -93,6 +93,8 @@ class View {
       // https://datatables.net/reference/api/row.add()
       return dt.row.add(row)
     }, this._dataTable.clear()).draw()
+
+    this._dataTable.responsive.recalc()
   }
 
   addRow (row) {
@@ -148,7 +150,8 @@ class View {
 
     const dataTable = tableElement.DataTable({
       columns,
-      'order': [[ orderIndex, orderType ]]
+      'order': [[ orderIndex, orderType ]],
+      responsive: true
     })
 
     var selectedRow = null
@@ -168,12 +171,14 @@ class View {
   }
 
   _initInputForm (formElement, tableConf, buttonsConf) {
+    console.log('tableConf=' + JSON.stringify(tableConf))
+    const colMd = tableConf.conf.numColumn >= 3 ? 'col-md-4' : 'col-md-6'
     var row = $('<div class="row" />')
     formElement.append(row)
     // Inputs
     for (let i = 0; i < tableConf.ui.length; i++) {
       if (tableConf.ui[i].input === 'text') {
-        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
+        const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -181,7 +186,7 @@ class View {
         const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'textArea') {
-        const formGroup = $('<div class="col-md-6 form-group" />')
+        const formGroup = $(`<div class="${colMd} form-group" />`)
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -189,7 +194,7 @@ class View {
         const input = $(`<textarea class="form-control input-md" name="${tableConf.ui[i].id}" rows="2" placeholder="${tableConf.ui[i].placeholder || ''}" '/>`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'hidden') {
-        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
+        const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
@@ -197,7 +202,7 @@ class View {
         const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="hidden"/>`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'select') {
-        const formGroup = $('<div class="col-md-6 form-group" style="height:60px;" />')
+        const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
         row.append(formGroup)
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)

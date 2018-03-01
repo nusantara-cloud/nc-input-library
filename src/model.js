@@ -3,10 +3,10 @@ var log = require('../lib/logger')
 
 const TAG = 'Model'
 class Model {
-  getRequest (url, params = null) {
-    log.debug(TAG, `getRequest(): url=${url} params=${JSON.stringify(params)}`)
+  getRequest (url, buttonConf) {
+    log.debug(TAG, `getRequest(): url=${url} buttonConf=${JSON.stringify(buttonConf)}`)
     return new Promise((resolve, reject) => {
-      axios.get(url, {params}).then(resp => {
+      axios.get(url, {timeout: buttonConf.networkTimeout}).then(resp => {
         resolve(resp.data)
       }).catch(err => {
         if (err.response) {
@@ -21,10 +21,10 @@ class Model {
     })
   }
 
-  submitData (url, payload) {
-    log.debug(TAG, `apiPOST(): url=${url} payload=${JSON.stringify(payload)}`)
+  submitData (url, payload, buttonConf) {
+    log.debug(TAG, `apiPOST(): url=${url} payload=${JSON.stringify(payload)} buttonConf=${JSON.stringify(buttonConf)}`)
     return new Promise((resolve, reject) => {
-      axios.post(url, payload).then(resp => {
+      axios.post(url, payload, {timeout: buttonConf.networkTimeout}).then(resp => {
         resolve(resp.data)
       }).catch(err => {
         if (err.response) {
