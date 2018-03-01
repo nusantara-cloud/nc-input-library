@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"/>
     <link rel="stylesheet" type="text/css" href="../dist/css/nc-input-library.css"/>
     <link rel="stylesheet" type="text/css" href="../dist/css/nprogress.css"/>
   </head>
@@ -88,6 +89,7 @@
         ui: [
           {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
           {id: 'lastModified', desc: 'Last Modified', dataTable: true, type: 'date'},
+          {id: 'date', desc: 'Date', dataTable: true, type: 'date', input: 'date', data: {dateFormat: 'YYYY-MM-DD hh:mm'}},
           {id: 'firstName', desc: 'First Name', dataTable: true, input: 'text', disabled: false},
           {id: 'lastName', desc: 'Last Name', dataTable: true, input: 'text', disabled: false},
           {id: 'grade', desc: 'Grade', dataTable: true, input: 'select', disabled: false, selectData: getStudentGrades},

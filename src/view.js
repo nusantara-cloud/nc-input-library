@@ -1,11 +1,16 @@
 var $ = require('jquery')
-var dt = require('datatables.net-responsive')(window, $)
+require('datatables.net-responsive')(window, $)
+require('eonasdan-bootstrap-datetimepicker')
 require('select2')($)
 
 // var dt = null
 var moment = require('moment')
 // var moment = null
 var NProgress = require('nprogress')
+
+var log = require('../lib/logger')
+
+const TAG = 'View'
 
 class View {
   constructor (rootElement) {
@@ -131,14 +136,19 @@ class View {
     const orderType = tableConf.conf.orderType || 'desc'
     var orderIndex = -1
     for (var i = 0; i < tableConf.ui.length; i++) {
-      const colConf = {
+      let colConf = {
         data: tableConf.ui[i].id,
         name: tableConf.ui[i].id // used to refer to this column, instead of using index
       }
 
       if (tableConf.ui[i].type === 'date' || tableConf.ui[i].input === 'date') {
+        let dateFormat = 'YYYY-MM-DD hh:mm:ss'
+        if (tableConf.ui[i].data && tableConf.ui[i].data.dateFormat) {
+          dateFormat = tableConf.ui[i].data.dateFormat
+        }
+
         colConf.render = function (data, type, full, meta) {
-          return moment(data).utc().format('YYYY-MM-DD hh:mm:ss')
+          return moment(data).utc().format(dateFormat)
         }
       }
 
@@ -184,6 +194,22 @@ class View {
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
         const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
+        formGroup.append(input)
+      } else if (tableConf.ui[i].input === 'date') {
+        const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
+        row.append(formGroup)
+        const label = $('<label/>')
+        label.html(tableConf.ui[i].desc)
+        formGroup.append(label)
+        const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
+        let dateFormat = 'YYYY-MM-DD hh:mm'
+        if (tableConf.ui[i].data && tableConf.ui[i].data.dateFormat) {
+          dateFormat = tableConf.ui[i].data.dateFormat
+        }
+        input.datetimepicker({
+          format: dateFormat,
+          defaultDate: moment().format(dateFormat)
+        })
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'textArea') {
         const formGroup = $(`<div class="${colMd} form-group" />`)
