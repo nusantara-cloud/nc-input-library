@@ -368,7 +368,7 @@ class View {
   _initLayout (rootElement, tableConf, designConf) {
     const initialized = {}
     // Initialze bootstrap panel
-    var panel = $('<div class="panel panel-info" />')
+    var panel = $('<div class="panel panel-default" />')
     rootElement.append(panel)
     var panelHeading = $('<div class="panel-heading"/>')
     panel.append(panelHeading)
