@@ -80,6 +80,15 @@
       console.log('You clicked row with data: ' + JSON.stringify(data))
     }
 
+    function onTableDrawn (appliedRows) {
+      if (appliedRows) {
+        const length = appliedRows.length
+        console.log(JSON.stringify(appliedRows.length))
+        const div = $(`<h1> Row Length = ${length} </h1>`)
+        studentNCInput.setFirstCustomView(div)
+      }
+    }
+
     const studentEditorHeader = {
       design: {
         title: 'Student Editor',
@@ -101,6 +110,7 @@
           orderBy: 'lastModified',
           getURL: getDataURL,
           onRowClicked: onRowClicked,
+          onTableDrawn: onTableDrawn,
           numColumn: 3 // number of column in the datatable
         }
       },

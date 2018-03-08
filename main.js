@@ -6,7 +6,7 @@ var Presenter = require('./src/presenter.js')
 var Model = require('./src/model.js')
 var View = require('./src/view.js')
 var log = require('./lib/logger')
-log.setLogLevel('debug')
+log.setLogLevel('info')
 
 $.fn.NCInputLibrary = function (conf) {
   const rootId = $(this)
@@ -16,6 +16,9 @@ $.fn.NCInputLibrary = function (conf) {
   // Start everything!
   presenter.initialize()
   return {
-    reloadTable: presenter.reloadTable.bind(presenter)
+    reloadTable: presenter.reloadTable.bind(presenter),
+    clearNotif: presenter.clearNotif.bind(presenter),
+    setFirstCustomView: presenter.setFirstCustomView.bind(presenter),
+    setSecondCustomView: presenter.setSecondCustomView.bind(presenter)
   }
 }

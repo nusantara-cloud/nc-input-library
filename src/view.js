@@ -41,9 +41,25 @@ class View {
     this._onRowClickedListener = fn
   }
 
+  setOnTableDrawnListener (fn) {
+    this._onTableDrawnListener = fn
+  }
+
   setOnButtonClickedListener (fn) {
     // fn(postTo)
     this._onButtonClicked = fn
+  }
+
+  // Add view next to the search UI
+  setFirstCustomView (htmlElement) {
+    this._htmlElements.firstCustomView.empty()
+    this._htmlElements.firstCustomView.append(htmlElement)
+  }
+
+  // Add view next to the first custom view
+  setSecondCustomView (htmlElement) {
+    this._htmlElements.secondCustomView.empty()
+    this._htmlElements.secondCustomView.append(htmlElement)
   }
 
   setNotif (text, error = false) {
@@ -164,6 +180,7 @@ class View {
       responsive: true
     })
 
+    // Hook onRowClickListener
     var selectedRow = null
     const self = this
     tableElement.find('tbody').on('click', 'tr', function () {
@@ -177,11 +194,19 @@ class View {
       self._onRowClickedListener(self._selectedData)
     })
 
+    // Hook onDrawListener
+    dataTable.on('draw.dt', () => {
+      const appliedRows = dataTable.rows({filter: 'applied'}).data()
+      if (this._onTableDrawnListener) {
+        this._onTableDrawnListener(appliedRows)
+      }
+    })
+
     return dataTable
   }
 
   _initInputForm (formElement, tableConf, buttonsConf) {
-    console.log('tableConf=' + JSON.stringify(tableConf))
+    log.verbose(TAG, '_initInputForm(): tableConf=' + JSON.stringify(tableConf))
     const colMd = tableConf.conf.numColumn >= 3 ? 'col-md-4' : 'col-md-6'
     var row = $('<div class="row" />')
     formElement.append(row)
@@ -325,8 +350,18 @@ class View {
     tableElement.append(thead)
   }
 
-  // Initialize HTML layout to place the element
-  // (i.e. empty div for inputs, empty div for buttons, and empty table)
+  /* Initialize HTML layout to place the element
+     (i.e. empty div for inputs, empty div for buttons, and empty table)
+
+     return:
+      {
+        inputForm: ...,
+        notif: ...,
+        firstCustomView:
+        secondCustomView:
+        table:
+      }
+  */
   _initLayout (rootElement, tableConf, designConf) {
     const initialized = {}
     // Initialze bootstrap panel
@@ -357,6 +392,26 @@ class View {
     // Initialize HTML form used for inputs
     row = $('<div class="row" />')
     // Initialize HTML elements for DataTable search
+    const searchUI = this._initializeSearchUI(tableConf)
+    initialized.firstCustomView = $('<div class="col-md-4" />')
+    initialized.secondCustomView = $('<div class="col-md-4" />')
+    row.append(searchUI)
+    row.append(initialized.firstCustomView)
+    row.append(initialized.secondCustomView)
+    panelBody.append(row)
+
+    // Iniitialize HTML table used for DataTable
+    row = $('<div class="row" />')
+    panelBody.append(row)
+    col = $('<div class="col-md-12" />')
+    initialized.table = $('<table class="custom-table table-stripped table-bordered table-hover" />')
+    row.append(col)
+    col.append(initialized.table)
+
+    return initialized
+  }
+
+  _initializeSearchUI (tableConf) {
     var divColMd4 = $('<div class="col-md-4"></div>')
     var labelSearch = $('<label>Search</label><br/>')
     divColMd4.append(labelSearch)
@@ -423,28 +478,14 @@ class View {
       performMultiSearch()
     })
 
-    // Ending of input search table
-    row.append(divColMd4)
-    panelBody.append(row)
-
-    // button remove when clicked action
+        // button remove when clicked action
     $(divCurrFilter).on('click', '.btn-remove', function (e) {
       $(this).parent().remove()
       clearSearch()
       performMultiSearch()
     })
 
-    $('head').append($('<style>.select2 {width:100%!important;}</style>'))
-
-    // Iniitialize HTML table used for DataTable
-    row = $('<div class="row" />')
-    panelBody.append(row)
-    col = $('<div class="col-md-12" />')
-    initialized.table = $('<table class="custom-table table-stripped table-bordered table-hover" />')
-    row.append(col)
-    col.append(initialized.table)
-
-    return initialized
+    return divColMd4
   }
 }
 

@@ -1,10 +1,14 @@
+var _ = require('lodash')
+
 var log = require('../lib/logger')
 
 const TAG = 'Presenter'
+const DEFAULT_NETWORK_TIMEOUT = 2000
 class Presenter {
   constructor (model, view, conf) {
     this._model = model
     this._view = view
+    // Note that Object assign only does shallow copy, not a deep one!
     this._conf = Object.assign({
       design: {
         title: 'Subject Header'
@@ -28,6 +32,9 @@ class Presenter {
         }
       }
     }, conf)
+
+    // Default value for networkTimeout
+    this._networkTimeout = (this._conf.buttons && this._conf.buttons.conf && this._conf.buttons.conf.networkTimeout) || DEFAULT_NETWORK_TIMEOUT
   }
 
   reloadTable (clearNotif) {
@@ -39,7 +46,7 @@ class Presenter {
     } else {
       getURL = this._conf.table.conf.getURL
     }
-    this._model.getRequest(getURL, this._conf.buttons.conf).then(resp => {
+    this._model.getRequest(getURL, this._networkTimeout).then(resp => {
       log.debug(TAG, 'reloadTable(): getRequest.resp=' + JSON.stringify(resp))
       if (resp.status) {
         this._view.setRows(resp.data)
@@ -60,6 +67,14 @@ class Presenter {
 
   clearNotif () {
     this._view.clearNotif()
+  }
+
+  setFirstCustomView (htmlElement) {
+    this._view.setFirstCustomView(htmlElement)
+  }
+
+  setSecondCustomView (htmlElement) {
+    this._view.setSecondCustomView(htmlElement)
   }
 
   initialize () {
@@ -85,7 +100,7 @@ class Presenter {
         throw new Error('postTo paramater is not defined correctly. It should be function/string')
       }
 
-      this._model.submitData(postURL, data, this._conf.buttons.conf).then(resp => {
+      this._model.submitData(postURL, data, this._networkTimeout).then(resp => {
         if (resp.status) {
           if (!resp.successMessage) {
             this._view.setNotif('Success!')
@@ -118,6 +133,14 @@ class Presenter {
       this._conf.table.conf.onRowClicked(data)
       this._view.setInputFormData(data)
     })
+
+    this._view.setOnTableDrawnListener(_.debounce((appliedRows) => {
+      // console.log('appliedRows=' + JSON.stringify(appliedRows[0]))
+      const listener = this._conf.table.conf.onTableDrawn
+      if (listener) {
+        listener(appliedRows)
+      }
+    }, 100))
   }
 }
 
