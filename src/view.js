@@ -270,14 +270,17 @@ class View {
           formGroup.append(inputSelect)
           inputSelect.select2()
         } else if (selectData instanceof Promise) {
+          // NOTE: We intentionally create select2 js first before appending the data, so that
+          // user of nc-input-library can expect UI initialization to be synchronous
+          // (i.e. user wants to attach to the select2 event)
+          inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
+          formGroup.append(inputSelect)
+          inputSelect.select2()
           selectData.then(resp => {
-            inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
             resp.forEach((element, index) => {
               var optionElement = $(`<option value="${element}">${element}</option>`)
               inputSelect.append(optionElement)
             })
-            formGroup.append(inputSelect)
-            inputSelect.select2()
           }).catch(err => {
             console.error(err)
           })
