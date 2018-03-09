@@ -104,6 +104,8 @@ class View {
   setInputFormData (json) {
     Object.keys(json).forEach(key => {
       this._htmlElements.inputForm.find(`[name=${key}]`).val(json[key])
+      // Update select2 UI
+      this._htmlElements.inputForm.find(`select[name=${key}]`).trigger('change')
     })
   }
 
@@ -258,8 +260,8 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        var inputSelect
-        var selectData = tableConf.ui[i].selectData()
+        let inputSelect
+        let selectData = tableConf.ui[i].selectData()
 
         if (selectData instanceof Array) {
           inputSelect = $(`<select name="${tableConf.ui[i].id}" class="form-control"></select>`)
