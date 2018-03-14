@@ -17,8 +17,7 @@ class Presenter {
         // i.e.: {id: 'subject', desc: 'Subject', dataTable: true, input: 'text', disabled: false},
         ui: [],
         conf: {
-          orderType: 'asc',
-          orderBy: null,
+          order: [['date', 'desc'], ['lastModified', 'desc']],
           getURL: '',
           onRowClicked: null,
           numColumn: 4

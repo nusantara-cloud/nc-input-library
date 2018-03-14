@@ -150,9 +150,7 @@ class View {
 
   _initDataTable (tableElement, tableConf) {
     const columns = []
-    const orderBy = tableConf.conf.orderBy
-    const orderType = tableConf.conf.orderType || 'desc'
-    var orderIndex = -1
+    var idToColumnIndexMap = {}
     for (var i = 0; i < tableConf.ui.length; i++) {
       let colConf = {
         data: tableConf.ui[i].id,
@@ -173,12 +171,17 @@ class View {
       if (tableConf.ui[i].dataTable === true) {
         columns.push(colConf)
       }
-      orderIndex = (orderBy === tableConf.ui[i].id) ? columns.length - 1 : orderIndex
+      idToColumnIndexMap[tableConf.ui[i].id] = columns.length - 1
     }
 
+    // From user order is of form [[tableId, desc']]
+    // we have to convert it to [[colId, 'desc']]
+    const order = (tableConf.conf.order || []).map(data => {
+      return [idToColumnIndexMap[data[0]], data[1]]
+    })
     const dataTable = tableElement.DataTable({
       columns,
-      'order': [[ orderIndex, orderType ]],
+      order,
       responsive: true
     })
 

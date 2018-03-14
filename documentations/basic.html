@@ -106,8 +106,7 @@
           {id: 'notes', desc: 'Notes', dataTable: true, input: 'textArea'}
         ],
         conf: {
-          orderType: 'desc', // If not defined orderType, default is desc
-          orderBy: 'lastModified',
+          order: [['lastModified', 'desc'], ['firstName', 'asc']],
           getURL: getDataURL,
           onRowClicked: onRowClicked,
           onTableDrawn: onTableDrawn,
