@@ -496,7 +496,7 @@ class View {
       performMultiSearch()
     })
 
-        // button remove when clicked action
+    // button remove when clicked action
     $(divCurrFilter).on('click', '.btn-remove', function (e) {
       $(this).parent().remove()
       clearSearch()
