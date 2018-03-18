@@ -394,9 +394,9 @@ class View {
 
     row = $('<div class="row" />')
     panelBody.append(row)
-    col = $('<div class="col-md-12" style="padding: 2%"/>')
+    col = $('<div class="col-md-12"/>')
     row.append(col)
-    initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; margin: auto" role="alert"/>')
+    initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; margin: auto; margin-bottom: 2%;" role="alert"/>')
     col.append(initialized.notif)
 
     // Initialize HTML form used for inputs
@@ -431,7 +431,7 @@ class View {
     // Within the first filter, there is a + button to add more filter.
     // On the subsequent filter, the button is -, which is to remove
     // that filter.
-    const btnAddFilter = $('<button type="button" class="btn btn-info btn-add-filter">+</button>')
+    const btnAddFilter = $('<button type="button" class="btn btn-info btn-add-filter" style="display:inline-block; width: 12%;">+</button>')
     function addFilterUI (firstFilter) {
       var searchOption = $('<select class="form-control custom-dt-search-option" style="display:inline-block; width:88%;" />')
       for (var i = 0; i < tableConf.ui.length; i++) {
@@ -447,7 +447,7 @@ class View {
       filterContent.append(searchOption)
 
       if (!firstFilter) {
-        const btnRemoveFilter = $('<button type="button" class="btn btn-danger btn-remove">-</button>')
+        const btnRemoveFilter = $('<button type="button" class="btn btn-danger btn-remove" style="display:inline-block; width: 12%;">-</button>')
         filterContent.append(btnRemoveFilter)
       } else {
         filterContent.append(btnAddFilter)
