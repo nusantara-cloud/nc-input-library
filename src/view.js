@@ -71,15 +71,17 @@ class View {
   }
 
   clearInputHighlight () {
-    this._tableConf.ui.map((field) => {
-      $('input[name=' + field.id + ']').removeClass('highlight-error')
+    this._tableConf.ui.forEach((field) => {
+      this._htmlElements.inputForm.find(`[name=${field.id}]`).removeClass('highlight-error')
+      // $('input[name=' + field.id + ']').removeClass('highlight-error')
     })
   }
 
   setInputHighlight (errorFields) {
     this.clearInputHighlight()
-    errorFields.map((field) => {
-      $('input[name=' + field + ']').addClass('highlight-error')
+    errorFields.forEach((field) => {
+      this._htmlElements.inputForm.find(`[name=${field}]`).addClass('highlight-error')
+      // $('input[name=' + field + ']').addClass('highlight-error')
     })
   }
 
