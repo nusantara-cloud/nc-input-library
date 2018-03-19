@@ -227,6 +227,14 @@ class View {
         formGroup.append(label)
         const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         formGroup.append(input)
+      } else if (tableConf.ui[i].input === 'password') {
+        const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
+        row.append(formGroup)
+        const label = $('<label/>')
+        label.html(tableConf.ui[i].desc)
+        formGroup.append(label)
+        const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="password" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
+        formGroup.append(input)
       } else if (tableConf.ui[i].input === 'date') {
         const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
         row.append(formGroup)
