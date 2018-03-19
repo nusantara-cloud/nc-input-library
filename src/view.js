@@ -104,10 +104,24 @@ class View {
   }
 
   setInputFormData (json) {
-    Object.keys(json).forEach(key => {
-      this._htmlElements.inputForm.find(`[name=${key}]`).val(json[key])
-      // Update select2 UI
-      this._htmlElements.inputForm.find(`select[name=${key}]`).trigger('change')
+    // This is used to check 1 level below json
+    this._tableConf.ui.map(field => {
+      if (field.id.split('.').length > 1) {
+        var splitField = field.id.split('.')
+        Object.keys(json).forEach(key => {
+          if (key === splitField[0]) {
+            this._htmlElements.inputForm.find(`[name="${key}.${splitField[1]}"]`).val(json[key][splitField[1]])
+            // Update select2 UI
+            this._htmlElements.inputForm.find(`select[name="${key}.${splitField[1]}"]`).trigger('change')
+          }
+        })
+      } else {
+        Object.keys(json).forEach(key => {
+          this._htmlElements.inputForm.find(`[name="${key}"]`).val(json[key])
+          // Update select2 UI
+          this._htmlElements.inputForm.find(`select[name=${key}]`).trigger('change')
+        })
+      }
     })
   }
 
