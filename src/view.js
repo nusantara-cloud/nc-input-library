@@ -72,7 +72,7 @@ class View {
 
   clearInputHighlight () {
     this._tableConf.ui.forEach((field) => {
-      this._htmlElements.inputForm.find(`[name=${field.id}]`).removeClass('highlight-error')
+      this._htmlElements.inputForm.find(`[name="${field.id}"]`).removeClass('highlight-error')
       // $('input[name=' + field.id + ']').removeClass('highlight-error')
     })
   }
@@ -80,7 +80,7 @@ class View {
   setInputHighlight (errorFields) {
     this.clearInputHighlight()
     errorFields.forEach((field) => {
-      this._htmlElements.inputForm.find(`[name=${field}]`).addClass('highlight-error')
+      this._htmlElements.inputForm.find(`[name="${field}"]`).addClass('highlight-error')
       // $('input[name=' + field + ']').addClass('highlight-error')
     })
   }
@@ -103,11 +103,28 @@ class View {
     return this._htmlElements.inputForm.serialize()
   }
 
+  setSingleFormData (inputName, data) {
+    if (typeof data === 'object') {
+      /*
+        data: {
+          school: {
+            name: 'Bunda Mulia'
+          }
+        }
+      */
+      Object.keys(data || []).forEach(key => {
+        this.setSingleFormData(inputName + '.' + key, data[key])
+      })
+    } else {
+      this._htmlElements.inputForm.find(`[name="${inputName}"]`).val(data)
+      // Update select2 UI
+      this._htmlElements.inputForm.find(`select[name="${inputName}"]`).trigger('change')
+    }
+  }
+
   setInputFormData (json) {
     Object.keys(json).forEach(key => {
-      this._htmlElements.inputForm.find(`[name=${key}]`).val(json[key])
-      // Update select2 UI
-      this._htmlElements.inputForm.find(`select[name=${key}]`).trigger('change')
+      this.setSingleFormData(key, json[key])
     })
   }
 
@@ -225,7 +242,7 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
+        const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'password') {
         const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
@@ -233,7 +250,7 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="password" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
+        const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="password" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'date') {
         const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
@@ -241,7 +258,7 @@ class View {
         const label = $('<label/>')
         label.html(tableConf.ui[i].desc)
         formGroup.append(label)
-        const input = $(`<input class="form-control input-md" name=${tableConf.ui[i].id} type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
+        const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="text" placeholder="${tableConf.ui[i].placeholder || ''}" ${tableConf.ui[i].disabled ? ' readonly' : ''} />`)
         let dateFormat = 'YYYY-MM-DD hh:mm'
         if (tableConf.ui[i].data && tableConf.ui[i].data.dateFormat) {
           dateFormat = tableConf.ui[i].data.dateFormat
@@ -496,7 +513,7 @@ class View {
       performMultiSearch()
     })
 
-        // button remove when clicked action
+    // button remove when clicked action
     $(divCurrFilter).on('click', '.btn-remove', function (e) {
       $(this).parent().remove()
       clearSearch()
