@@ -1,7 +1,7 @@
 {
-  "name": "browserify-test",
+  "name": "nc-input-library",
   "version": "1.0.0",
-  "description": "",
+  "description": "Easily Program Input Form, Buttons, and DataTable using JSON",
   "main": "main.js",
   "browserify-shim": {
     "jquery": "global:$"
@@ -15,7 +15,19 @@
     "start": "node watch.js",
     "buildt": "browserify -d -g . > bundle.js"
   },
-  "author": "",
+  "author": {
+    "name": "Denny Harijanto",
+    "email": "denny@nusantara-cloud.com",
+    "url": "http://www.nusantara-cloud.com"
+  },
+  "repository": {
+    "bugs": {
+      "url": "https://github.com/nusantara-cloud/nc-input-library"
+    },
+    "type": "git",
+    "url": "git://github.com/nusantara-cloud/nc-input-library.git"
+  },
+  "homepage": "https://github.com/nusantara-cloud/nc-input-library",
   "license": "ISC",
   "devDependencies": {
     "axios": "^0.16.2",
