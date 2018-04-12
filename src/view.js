@@ -4,7 +4,9 @@ require('eonasdan-bootstrap-datetimepicker')
 require('select2')($)
 
 // var dt = null
-var moment = require('moment')
+var moment = require('moment-timezone')
+moment.tz.setDefault('UTC')
+
 // var moment = null
 var NProgress = require('nprogress')
 
@@ -177,13 +179,13 @@ class View {
       }
 
       if (tableConf.ui[i].type === 'date' || tableConf.ui[i].input === 'date') {
-        let dateFormat = 'YYYY-MM-DD hh:mm:ss'
+        let dateFormat = 'YYYY-MM-DD HH:mm:ss'
         if (tableConf.ui[i].data && tableConf.ui[i].data.dateFormat) {
           dateFormat = tableConf.ui[i].data.dateFormat
         }
 
         colConf.render = function (data, type, full, meta) {
-          return moment(data).utc().format(dateFormat)
+          return moment.utc(data).format(dateFormat)
         }
       }
 
@@ -265,7 +267,7 @@ class View {
         }
         input.datetimepicker({
           format: dateFormat,
-          defaultDate: moment().format(dateFormat)
+          defaultDate: moment.format(dateFormat)
         })
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'textArea') {
