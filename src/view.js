@@ -267,7 +267,7 @@ class View {
         }
         input.datetimepicker({
           format: dateFormat,
-          defaultDate: moment.format(dateFormat)
+          defaultDate: moment.utc().format(dateFormat)
         })
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'textArea') {
