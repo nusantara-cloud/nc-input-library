@@ -1,6 +1,6 @@
 {
   "name": "nc-input-library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Easily Program Input Form, Buttons, and DataTable using JSON",
   "main": "main.js",
   "browserify-shim": {
