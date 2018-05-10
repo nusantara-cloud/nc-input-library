@@ -362,7 +362,13 @@ class View {
           buttonsConf.ui[i].desc + '</button>')
       button.click(event => {
         if (this._onButtonClicked) {
-          this._onButtonClicked(id, buttonsConf.ui[i].postTo, event)
+          if (buttonsConf.ui[i].confirm) {
+            if (confirm(buttonsConf.ui[i].confirm)) {
+              this._onButtonClicked(id, buttonsConf.ui[i].postTo, event)
+            }
+          } else {
+            this._onButtonClicked(id, buttonsConf.ui[i].postTo, event)
+          }
         }
       })
       col.append(button)

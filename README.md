@@ -39,7 +39,7 @@ The interface is configured through writing simple JSON header, such as:
       ui: [
         {id: 'add', desc: 'Add', postTo: addStudentURL},
         {id: 'edit', desc: 'Edit', postTo: editStudentURL},
-        {id: 'delete', desc: 'Delete', postTo: deleteStudentURL}
+        {id: 'delete', desc: 'Delete', confirm: 'Confirm delete?', postTo: deleteStudentURL}
       ]
     }
   }
