@@ -98,12 +98,14 @@
         ui: [
           {id: 'id', desc: 'ID', dataTable: true, input: 'text', disabled: true},
           {id: 'lastModified', desc: 'Last Modified', dataTable: true, type: 'date'},
+          // Custom date formatting
           {id: 'date', desc: 'Date', dataTable: true, type: 'date', input: 'date', data: {dateFormat: 'YYYY-MM-DD hh:mm'}},
           {id: 'firstName', desc: 'First Name', dataTable: true, input: 'text', disabled: false},
           {id: 'lastName', desc: 'Last Name', dataTable: true, input: 'text', disabled: false},
           {id: 'password', desc: 'Password', dataTable: true, input: 'password'},
           {id: 'confirmPassword', desc: 'Confirm Password', dataTable: true, input: 'password'},
-          {id: 'grade', desc: 'Grade', dataTable: true, input: 'select', disabled: false, selectData: getStudentGrades},
+          // Custom data formatting
+          {id: 'grade', desc: 'Grade', dataTable: true, input: 'select', disabled: false, selectData: getStudentGrades, data: {format: grade => 'Grade: ' + grade}},
           {id: 'address', desc: 'Address', dataTable: true, input: 'text', disabled: false},
           {id: 'notes', desc: 'Notes', dataTable: true, input: 'textArea'},
           {id: 'school.name', desc: 'School Name', dataTable: true, input: 'text'} // This retrieves the data from the Object school.name

@@ -187,6 +187,11 @@ class View {
         colConf.render = function (data, type, full, meta) {
           return moment.utc(data).format(dateFormat)
         }
+      } else if (tableConf.ui[i].data && tableConf.ui[i].data.format) {
+        let formatFn = tableConf.ui[i].data.format
+        colConf.render = function (data, type, full, meta) {
+          return formatFn(data)
+        }
       }
 
       if (tableConf.ui[i].dataTable === true) {
