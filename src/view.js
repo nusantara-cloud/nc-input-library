@@ -286,9 +286,6 @@ class View {
       } else if (tableConf.ui[i].input === 'hidden') {
         const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
         row.append(formGroup)
-        const label = $('<label/>')
-        label.html(tableConf.ui[i].desc)
-        formGroup.append(label)
         const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="hidden"/>`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'select') {
@@ -434,7 +431,7 @@ class View {
     panelBody.append(row)
     col = $('<div class="col-md-12"/>')
     row.append(col)
-    initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; margin: auto; margin-bottom: 2%;" role="alert"/>')
+    initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; margin: 2%;" role="alert"/>')
     col.append(initialized.notif)
 
     // Initialize HTML form used for inputs
