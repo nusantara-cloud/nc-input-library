@@ -129,7 +129,9 @@ class Presenter {
     // Set row listener
     this._view.setOnRowClickedListener((data) => {
       // log.debug(`data=${JSON.stringify(data)}`)
-      this._conf.table.conf.onRowClicked(data)
+      if (this._conf.table.conf.onRowClicked) {
+        this._conf.table.conf.onRowClicked(data)
+      }
       this._view.setInputFormData(data)
     })
 

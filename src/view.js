@@ -284,10 +284,8 @@ class View {
         const input = $(`<textarea class="form-control input-md" name="${tableConf.ui[i].id}" rows="2" placeholder="${tableConf.ui[i].placeholder || ''}" '/>`)
         formGroup.append(input)
       } else if (tableConf.ui[i].input === 'hidden') {
-        const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
-        row.append(formGroup)
         const input = $(`<input class="form-control input-md" name="${tableConf.ui[i].id}" type="hidden"/>`)
-        formGroup.append(input)
+        row.append(input)
       } else if (tableConf.ui[i].input === 'select') {
         const formGroup = $(`<div class="${colMd} form-group" style="height:60px;" />`)
         row.append(formGroup)
