@@ -37,6 +37,9 @@ declare namespace NCInputLibrary {
     postTo: GetURLCallback | string
   }
 
+  // Response: server response or error information
+  type postFinishedCallback = (id, successOrFailed, response) => void
+
   interface TableConf {
     order: Array<[string, 'desc' | 'asc']>
     getURL: string | GetURLCallback
@@ -55,6 +58,7 @@ declare namespace NCInputLibrary {
     },
     buttons: {
       ui: Array<ButtonEntry>
+      onPostFinished?: postFinishedCallback
       conf: {
         networkTimeout?: number
       }

@@ -100,6 +100,9 @@ class Presenter {
       }
 
       this._model.submitData(postURL, data, this._networkTimeout).then(resp => {
+        if (this._conf.buttons && this._conf.buttons.onPostFinished) {
+          this._conf.buttons.onPostFinished(id, true, resp)
+        }
         if (resp.status) {
           if (!resp.successMessage) {
             this._view.setNotif('Success!')
@@ -119,6 +122,9 @@ class Presenter {
         }
       }).catch(err => {
         log.error(TAG, err)
+        if (this._conf.buttons && this._conf.buttons.onPostFinished) {
+          this._conf.buttons.onPostFinished(id, false, err)
+        }
         this._view.setNotif('Failed: ' + err.message || 'Internal Error...', true)
       }).then(() => {
         this._view.finishProgressbar()
