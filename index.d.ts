@@ -10,6 +10,7 @@ declare namespace NCInputLibrary {
 
   interface InputOptionalData {
     format?: (colText: string) => string
+    dateFormat?: string
   }
 
   type SelectArrayDataCb = () => Array<string>
