@@ -47,14 +47,19 @@ class Presenter {
     }
     this._model.getRequest(getURL, this._networkTimeout).then(resp => {
       log.debug(TAG, 'reloadTable(): getRequest.resp=' + JSON.stringify(resp))
-      if (resp.status) {
-        this._view.setRows(resp.data)
-        if (clearNotif) {
-          this._view.clearNotif()
+      if (typeof resp === 'object' && 'status' in resp) {
+        if (resp.status) {
+          this._view.setRows(resp.data)
+          if (clearNotif) {
+            this._view.clearNotif()
+          }
+        } else {
+          log.error(TAG, 'Failed to fetch data! resp=' + JSON.stringify(resp))
+          this._view.setNotif('Failed to fetch data: ' + resp.errMessage, true)
         }
       } else {
-        log.error(TAG, 'Failed to fetch data! resp=' + JSON.stringify(resp))
-        this._view.setNotif('Failed to fetch data: ' + resp.errMessage, true)
+        log.error(TAG, 'Server doesn\'t return expected response! Has your session timeout? resp=' + JSON.stringify(resp))
+        this._view.setNotif('Server doesn\'t return expected response! Has your session timeout?', true)
       }
     }).catch(err => {
       log.error(TAG, err)
@@ -103,22 +108,27 @@ class Presenter {
         if (this._conf.buttons && this._conf.buttons.onPostFinished) {
           this._conf.buttons.onPostFinished(id, true, resp)
         }
-        if (resp.status) {
-          if (!resp.successMessage) {
-            this._view.setNotif('Success!')
+        if (typeof resp === 'object' && 'status' in resp) {
+          if (resp.status) {
+            if (!resp.successMessage) {
+              this._view.setNotif('Success!')
+            } else {
+              this._view.setNotif(resp.successMessage)
+            }
+            this._view.clearInputHighlight()
+            // Refresh the table
+            this.reloadTable()
           } else {
-            this._view.setNotif(resp.successMessage)
+            log.error(TAG, 'Failed to submit data! resp=' + JSON.stringify(resp))
+            this._view.setNotif(`Failed: ${resp.errMessage}`, true)
+            // Highlight error on inputs
+            if (resp.errData && resp.errData.errorFields) {
+              this._view.setInputHighlight(resp.errData.errorFields)
+            }
           }
-          this._view.clearInputHighlight()
-          // Refresh the table
-          this.reloadTable()
         } else {
-          log.error(TAG, 'Failed to submit data! errCode=' + resp.errCode + ' errMessage=' + resp.errMessage)
-          this._view.setNotif(`Failed: ${resp.errMessage}`, true)
-          // Highlight error on inputs
-          if (resp.errData && resp.errData.errorFields) {
-            this._view.setInputHighlight(resp.errData.errorFields)
-          }
+        log.error(TAG, 'Server doesn\'t return expected response! Has your session timeout? resp=' + JSON.stringify(resp))
+        this._view.setNotif('Server doesn\'t return expected response! Has your session timeout?', true)
         }
       }).catch(err => {
         log.error(TAG, err)
