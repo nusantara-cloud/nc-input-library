@@ -36,7 +36,7 @@ declare namespace NCInputLibrary {
     id: string // POST / GET id
     desc: string
     postTo: GetURLCallback | string
-    confirm: string // If specified, when clicked, a confirmation prompt with this message is shown.
+    confirm?: string // If specified, when clicked, a confirmation prompt with this message is shown.
   }
 
   // Response: server response or error information
