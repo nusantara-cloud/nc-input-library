@@ -19,6 +19,7 @@ $.fn.NCInputLibrary = function (conf) {
     reloadTable: presenter.reloadTable.bind(presenter),
     clearNotif: presenter.clearNotif.bind(presenter),
     setFirstCustomView: presenter.setFirstCustomView.bind(presenter),
-    setSecondCustomView: presenter.setSecondCustomView.bind(presenter)
+    setSecondCustomView: presenter.setSecondCustomView.bind(presenter),
+    getRow: presenter.getRow.bind(presenter)
   }
 }

@@ -36,6 +36,8 @@ class View {
     this._initInputForm(this._htmlElements.inputForm, this._tableConf, buttonsConf)
     this._initTable(this._htmlElements.table, this._tableConf)
     this._dataTable = this._initDataTable(this._htmlElements.table, this._tableConf)
+
+    return this._dataTable
   }
 
   setOnRowClickedListener (fn) {
@@ -215,14 +217,20 @@ class View {
     var selectedRow = null
     const self = this
     tableElement.find('tbody').on('click', 'tr', function () {
-      self._selectedData = dataTable.row(this).data()
-      if (selectedRow) {
-        selectedRow.removeClass('highlight-dt-row')
-      }
-      selectedRow = $(this).closest('tr')
+      const data = dataTable.row(this).data()
+      // There are situations where the element that is clicked is not something that would return a row
+      // For example, when a row doesn't fit a line and is expanded using a green plus button, when the expansion
+      // view is clicked this callback is triggered, but dataTable.row() wouldn't return the data
+      if (data) {
+        self._selectedData = data
+        if (selectedRow) {
+          selectedRow.removeClass('highlight-dt-row')
+        }
+        selectedRow = $(this).closest('tr')
 
-      selectedRow.addClass('highlight-dt-row')
-      self._onRowClickedListener(self._selectedData)
+        selectedRow.addClass('highlight-dt-row')
+        self._onRowClickedListener(self._selectedData)
+      }
     })
 
     // Hook onDrawListener

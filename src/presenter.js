@@ -81,9 +81,13 @@ class Presenter {
     this._view.setSecondCustomView(htmlElement)
   }
 
+  getRow (element) {
+    return this._dataTable.row(element).data()
+  }
+
   initialize () {
     // Initialize the view
-    this._view.initialize(this._conf)
+    this._dataTable = this._view.initialize(this._conf)
 
     // Initialize the table with data
     // this.reloadTable()
@@ -144,7 +148,7 @@ class Presenter {
 
     // Set row listener
     this._view.setOnRowClickedListener((data) => {
-      // log.debug(`data=${JSON.stringify(data)}`)
+      log.debug(`data=${JSON.stringify(data)}`)
       if (this._conf.table.conf.onRowClicked) {
         this._conf.table.conf.onRowClicked(data)
       }
