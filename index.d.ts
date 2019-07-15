@@ -73,7 +73,7 @@ declare namespace NCInputLibrary {
     setFirstCustomView(jqueryElement: JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>): void
     setSecondCustomView(jqueryElement: JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>): void
     // Given element nested inside a row, returns the row value
-    getRow((jqueryElement: JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>): Object
+    getRow(jqueryElement: JQuery.htmlString | JQuery.TypeOrArray<JQuery.Node | JQuery<JQuery.Node>>): Object
   }
 }
 
