@@ -435,9 +435,9 @@ class View {
 
     row = $('<div class="row" />')
     panelBody.append(row)
-    col = $('<div class="col-md-12"/>')
+    col = $('<div class="col-md-12" style="margin: 1% 0 1% 0"/>')
     row.append(col)
-    initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; margin: 2%;" role="alert"/>')
+    initialized.notif = $('<div class="alert alert-success" style="text-align: center; display: none; " role="alert"/>')
     col.append(initialized.notif)
 
     // Initialize HTML form used for inputs
