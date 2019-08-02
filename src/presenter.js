@@ -82,7 +82,7 @@ class Presenter {
   }
 
   getRow (element) {
-    return this._dataTable.row(element).data()
+    return this._dataTable.row(element)
   }
 
   initialize () {
