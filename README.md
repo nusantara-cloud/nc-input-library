@@ -71,3 +71,7 @@ https://martinfowler.com/eaaDev/uiArchs.html#Model-view-presentermvp
 
 ## Example
 See documentation/basic.html
+
+## TODO
+* For selectData, add ability to differentiate the data that's rendered vs. data that's send to the network.
+  For example, on Filosedu's usecase, we wanted to show subtopic's description such as '103 - Penjumalahan: Penjumlahan 6-10' while on POST, we actually want to send out the subtopic id instead.
